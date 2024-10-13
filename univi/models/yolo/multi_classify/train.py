@@ -11,7 +11,7 @@ from univi.utils.plotting import plot_images, plot_results
 from univi.utils.torch_utils import is_parallel, strip_optimizer, torch_distributed_zero_first
 
 
-class MultilabelClassificationTrainer(BaseTrainer):
+class MultiLabelClassificationTrainer(BaseTrainer):
     """
     A class extending the BaseTrainer class for training based on a multilabel classification model.
 

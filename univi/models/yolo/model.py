@@ -34,9 +34,9 @@ class YOLO(Model):
             },
             "multi_classify": {
                 "model": MultiLabelClassificationModel,
-                "trainer": yolo.classify.ClassificationTrainer,
-                "validator": yolo.classify.ClassificationValidator,
-                "predictor": yolo.classify.ClassificationPredictor,
+                "trainer": yolo.multi_classify.MultiLabelClassificationTrainer,
+                "validator": yolo.multi_classify.MultiLabelClassificationValidator,
+                "predictor": yolo.multi_classify.MultiLabelClassificationPredictor,
             },
             "detect": {
                 "model": DetectionModel,
