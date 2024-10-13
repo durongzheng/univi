@@ -7,11 +7,10 @@ from typing import List, Union
 import numpy as np
 import torch
 
-from ultralytics.cfg import TASK2DATA, get_cfg, get_save_dir
-from ultralytics.engine.results import Results
-from ultralytics.hub import HUB_WEB_ROOT, HUBTrainingSession
-from ultralytics.nn.tasks import attempt_load_one_weight, guess_model_task, nn, yaml_model_load
-from ultralytics.utils import (
+from univi.cfg import TASK2DATA, get_cfg, get_save_dir
+from univi.engine.results import Results
+from univi.nn.tasks import attempt_load_one_weight, guess_model_task, nn, yaml_model_load
+from univi.utils import (
     ARGV,
     ASSETS,
     DEFAULT_CFG_DICT,
@@ -31,7 +30,7 @@ class Model(nn.Module):
 
     This class provides a common interface for various operations related to YOLO models, such as training,
     validation, prediction, exporting, and benchmarking. It handles different types of models, including those
-    loaded from local files, Ultralytics HUB, or Triton Server.
+    loaded from local files.
 
     Attributes:
         callbacks (Dict): A dictionary of callback functions for various events during model operations.
@@ -43,7 +42,6 @@ class Model(nn.Module):
         ckpt_path (str): The path to the checkpoint file.
         overrides (Dict): A dictionary of overrides for model configuration.
         metrics (Dict): The latest training/validation metrics.
-        session (HUBTrainingSession): The Ultralytics HUB session, if applicable.
         task (str): The type of task the model is intended for.
         model_name (str): The name of the model.
 
@@ -88,13 +86,11 @@ class Model(nn.Module):
         Initializes a new instance of the YOLO model class.
 
         This constructor sets up the model based on the provided model path or name. It handles various types of
-        model sources, including local files, Ultralytics HUB models, and Triton Server models. The method
-        initializes several important attributes of the model and prepares it for operations like training,
-        prediction, or export.
+        model sources, including local files. The method initializes several important attributes of the model 
+        and prepares it for operations like training, prediction, or export.
 
         Args:
-            model (Union[str, Path]): Path or name of the model to load or create. Can be a local file path, a
-                model name from Ultralytics HUB, or a Triton Server model.
+            model (Union[str, Path]): Path or name of the model to load or create. Can be a local file path.
             task (str | None): The task type associated with the YOLO model, specifying its application domain.
             verbose (bool): If True, enables verbose output during the model's initialization and subsequent
                 operations.
@@ -102,12 +98,11 @@ class Model(nn.Module):
         Raises:
             FileNotFoundError: If the specified model file does not exist or is inaccessible.
             ValueError: If the model file or configuration is invalid or unsupported.
-            ImportError: If required dependencies for specific model types (like HUB SDK) are not installed.
+            ImportError: If required dependencies for specific model types are not installed.
 
         Examples:
             >>> model = Model("yolov8n.pt")
             >>> model = Model("path/to/model.yaml", task="detect")
-            >>> model = Model("hub_model", verbose=True)
         """
         super().__init__()
         self.callbacks = callbacks.get_default_callbacks()
@@ -119,21 +114,8 @@ class Model(nn.Module):
         self.ckpt_path = None
         self.overrides = {}  # overrides for trainer object
         self.metrics = None  # validation/training metrics
-        self.session = None  # HUB session
         self.task = task  # task type
         model = str(model).strip()
-
-        # Check if Ultralytics HUB model from https://hub.ultralytics.com
-        if self.is_hub_model(model):
-            # Fetch model from HUB
-            checks.check_requirements("hub-sdk>=0.0.8")
-            self.session = HUBTrainingSession.create_session(model)
-            model = self.session.model_file
-
-        # Check if Triton Server model
-        elif self.is_triton_model(model):
-            self.model_name = self.model = model
-            return
 
         # Load or create new YOLO model
         if Path(model).suffix in {".yaml", ".yml"}:
@@ -171,65 +153,6 @@ class Model(nn.Module):
             ...     print(f"Detected {len(r)} objects in image")
         """
         return self.predict(source, stream, **kwargs)
-
-    @staticmethod
-    def is_triton_model(model: str) -> bool:
-        """
-        Checks if the given model string is a Triton Server URL.
-
-        This static method determines whether the provided model string represents a valid Triton Server URL by
-        parsing its components using urllib.parse.urlsplit().
-
-        Args:
-            model (str): The model string to be checked.
-
-        Returns:
-            (bool): True if the model string is a valid Triton Server URL, False otherwise.
-
-        Examples:
-            >>> Model.is_triton_model('http://localhost:8000/v2/models/yolov8n')
-            True
-            >>> Model.is_triton_model('yolov8n.pt')
-            False
-        """
-        from urllib.parse import urlsplit
-
-        url = urlsplit(model)
-        return url.netloc and url.path and url.scheme in {"http", "grpc"}
-
-    @staticmethod
-    def is_hub_model(model: str) -> bool:
-        """
-        Check if the provided model is an Ultralytics HUB model.
-
-        This static method determines whether the given model string represents a valid Ultralytics HUB model
-        identifier. It checks for three possible formats: a full HUB URL, an API key and model ID combination,
-        or a standalone model ID.
-
-        Args:
-            model (str): The model identifier to check. This can be a URL, an API key and model ID
-                combination, or a standalone model ID.
-
-        Returns:
-            (bool): True if the model is a valid Ultralytics HUB model, False otherwise.
-
-        Examples:
-            >>> Model.is_hub_model("https://hub.ultralytics.com/models/example_model")
-            True
-            >>> Model.is_hub_model("api_key_example_model_id")
-            True
-            >>> Model.is_hub_model("example_model_id")
-            True
-            >>> Model.is_hub_model("not_a_hub_model.pt")
-            False
-        """
-        return any(
-            (
-                model.startswith(f"{HUB_WEB_ROOT}/models/"),  # i.e. https://hub.ultralytics.com/models/MODEL_ID
-                [len(x) for x in model.split("_")] == [42, 20],  # APIKEY_MODEL
-                len(model) == 20 and not Path(model).exists() and all(x not in model for x in "./\\"),  # MODEL
-            )
-        )
 
     def _new(self, cfg: str, task=None, model=None, verbose=False) -> None:
         """
@@ -407,7 +330,7 @@ class Model(nn.Module):
         from copy import deepcopy
         from datetime import datetime
 
-        from ultralytics import __version__
+        from univi import __version__
 
         updates = {
             "model": deepcopy(self.model).half() if isinstance(self.model, nn.Module) else self.model,
@@ -601,7 +524,7 @@ class Model(nn.Module):
             - Batch size is set to 1 for tracking in videos.
         """
         if not hasattr(self.predictor, "trackers"):
-            from ultralytics.trackers import register_tracker
+            from univi.trackers import register_tracker
 
             register_tracker(self, persist)
         kwargs["conf"] = kwargs.get("conf") or 0.1  # ByteTrack-based method needs low confidence predictions as input
@@ -680,7 +603,7 @@ class Model(nn.Module):
             >>> print(results)
         """
         self._check_is_pytorch_model()
-        from ultralytics.utils.benchmarks import benchmark
+        from univi.utils.benchmarks import benchmark
 
         custom = {"verbose": False}  # method defaults
         args = {**DEFAULT_CFG_DICT, **self.model.args, **custom, **kwargs, "mode": "benchmark"}
@@ -752,11 +675,10 @@ class Model(nn.Module):
 
         This method facilitates model training with a range of customizable settings. It supports training with a
         custom trainer or the default training approach. The method handles scenarios such as resuming training
-        from a checkpoint, integrating with Ultralytics HUB, and updating model and configuration after training.
+        from a checkpoint, and updating model and configuration after training.
 
-        When using Ultralytics HUB, if the session has a loaded model, the method prioritizes HUB training
-        arguments and warns if local arguments are provided. It checks for pip updates and combines default
-        configurations, method-specific defaults, and user-provided arguments to configure the training process.
+        It checks for pip updates and combines default configurations, method-specific defaults, and user-provided 
+        arguments to configure the training process.
 
         Args:
             trainer (BaseTrainer | None): Custom trainer instance for model training. If None, uses default.
@@ -784,10 +706,6 @@ class Model(nn.Module):
             >>> results = model.train(data='coco128.yaml', epochs=3)
         """
         self._check_is_pytorch_model()
-        if hasattr(self.session, "model") and self.session.model.id:  # Ultralytics HUB session with loaded model
-            if any(kwargs):
-                LOGGER.warning("WARNING ⚠️ using HUB training arguments, ignoring local training arguments.")
-            kwargs = self.session.train_args  # overwrite kwargs
 
         checks.check_pip_update_available()
 
@@ -807,7 +725,6 @@ class Model(nn.Module):
             self.trainer.model = self.trainer.get_model(weights=self.model if self.ckpt else None, cfg=self.model.yaml)
             self.model = self.trainer.model
 
-        self.trainer.hub_session = self.session  # attach optional HUB session
         self.trainer.train()
         # Update model and cfg after training
         if RANK in {-1, 0}:
@@ -851,7 +768,7 @@ class Model(nn.Module):
         """
         self._check_is_pytorch_model()
         if use_ray:
-            from ultralytics.utils.tuner import run_ray_tune
+            from univi.utils.tuner import run_ray_tune
 
             return run_ray_tune(self, max_samples=iterations, *args, **kwargs)
         else:
@@ -909,7 +826,7 @@ class Model(nn.Module):
             >>> print(model.names)
             ['person', 'bicycle', 'car', ...]
         """
-        from ultralytics.nn.autobackend import check_class_names
+        from univi.nn.autobackend import check_class_names
 
         if hasattr(self.model, "names"):
             return check_class_names(self.model.names)

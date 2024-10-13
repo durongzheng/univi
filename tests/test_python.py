@@ -13,10 +13,10 @@ import yaml
 from PIL import Image
 
 from tests import CFG, IS_TMP_WRITEABLE, MODEL, SOURCE, TMP
-from ultralytics import RTDETR, YOLO
-from ultralytics.cfg import MODELS, TASK2DATA, TASKS
-from ultralytics.data.build import load_inference_source
-from ultralytics.utils import (
+from univi import RTDETR, YOLO
+from univi.cfg import MODELS, TASK2DATA, TASKS
+from univi.data.build import load_inference_source
+from univi.utils import (
     ASSETS,
     DEFAULT_CFG,
     DEFAULT_CFG_PATH,
@@ -28,8 +28,8 @@ from ultralytics.utils import (
     checks,
     is_github_action_running,
 )
-from ultralytics.utils.downloads import download
-from ultralytics.utils.torch_utils import TORCH_1_9
+from univi.utils.downloads import download
+from univi.utils.torch_utils import TORCH_1_9
 
 
 def test_model_forward():
@@ -60,7 +60,7 @@ def test_model_methods():
 
 def test_model_profile():
     """Test profiling of the YOLO model with `profile=True` to assess performance and resource usage."""
-    from ultralytics.nn.tasks import DetectionModel
+    from univi.nn.tasks import DetectionModel
 
     model = DetectionModel()  # build model
     im = torch.randn(1, 3, 64, 64)  # requires min imgsz=64
@@ -269,8 +269,8 @@ def test_labels_and_crops():
 @pytest.mark.skipif(not ONLINE, reason="environment is offline")
 def test_data_utils():
     """Test utility functions in ultralytics/data/utils.py, including dataset stats and auto-splitting."""
-    from ultralytics.data.utils import HUBDatasetStats, autosplit
-    from ultralytics.utils.downloads import zip_directory
+    from univi.data.utils import HUBDatasetStats, autosplit
+    from univi.utils.downloads import zip_directory
 
     # from ultralytics.utils.files import WorkingDirectory
     # with WorkingDirectory(ROOT.parent / 'tests'):
@@ -289,7 +289,7 @@ def test_data_utils():
 @pytest.mark.skipif(not ONLINE, reason="environment is offline")
 def test_data_converter():
     """Test dataset conversion functions from COCO to YOLO format and class mappings."""
-    from ultralytics.data.converter import coco80_to_coco91_class, convert_coco
+    from univi.data.converter import coco80_to_coco91_class, convert_coco
 
     file = "instances_val2017.json"
     download(f"https://github.com/ultralytics/assets/releases/download/v0.0.0/{file}", dir=TMP)
@@ -299,7 +299,7 @@ def test_data_converter():
 
 def test_data_annotator():
     """Automatically annotate data using specified detection and segmentation models."""
-    from ultralytics.data.annotator import auto_annotate
+    from univi.data.annotator import auto_annotate
 
     auto_annotate(
         ASSETS,
@@ -311,7 +311,7 @@ def test_data_annotator():
 
 def test_events():
     """Test event sending functionality."""
-    from ultralytics.hub.utils import Events
+    from univi.hub.utils import Events
 
     events = Events()
     events.enabled = True
@@ -322,7 +322,7 @@ def test_events():
 
 def test_cfg_init():
     """Test configuration initialization utilities from the 'ultralytics.cfg' module."""
-    from ultralytics.cfg import check_dict_alignment, copy_default_cfg, smart_value
+    from univi.cfg import check_dict_alignment, copy_default_cfg, smart_value
 
     with contextlib.suppress(SyntaxError):
         check_dict_alignment({"a": 1}, {"b": 2})
@@ -333,7 +333,7 @@ def test_cfg_init():
 
 def test_utils_init():
     """Test initialization utilities in the Ultralytics library."""
-    from ultralytics.utils import get_git_branch, get_git_origin_url, get_ubuntu_version, is_github_action_running
+    from univi.utils import get_git_branch, get_git_origin_url, get_ubuntu_version, is_github_action_running
 
     get_ubuntu_version()
     is_github_action_running()
@@ -355,15 +355,15 @@ def test_utils_checks():
 @pytest.mark.skipif(WINDOWS, reason="Windows profiling is extremely slow (cause unknown)")
 def test_utils_benchmarks():
     """Benchmark model performance using 'ProfileModels' from 'ultralytics.utils.benchmarks'."""
-    from ultralytics.utils.benchmarks import ProfileModels
+    from univi.utils.benchmarks import ProfileModels
 
     ProfileModels(["yolov8n.yaml"], imgsz=32, min_time=1, num_timed_runs=3, num_warmup_runs=1).profile()
 
 
 def test_utils_torchutils():
     """Test Torch utility functions including profiling and FLOP calculations."""
-    from ultralytics.nn.modules.conv import Conv
-    from ultralytics.utils.torch_utils import get_flops_with_torch_profiler, profile, time_sync
+    from univi.nn.modules.conv import Conv
+    from univi.utils.torch_utils import get_flops_with_torch_profiler, profile, time_sync
 
     x = torch.randn(1, 64, 20, 20)
     m = Conv(64, 64, k=1, s=2)
@@ -377,14 +377,14 @@ def test_utils_torchutils():
 @pytest.mark.skipif(not ONLINE, reason="environment is offline")
 def test_utils_downloads():
     """Test file download utilities from ultralytics.utils.downloads."""
-    from ultralytics.utils.downloads import get_google_drive_file_info
+    from univi.utils.downloads import get_google_drive_file_info
 
     get_google_drive_file_info("https://drive.google.com/file/d/1cqT-cJgANNrhIHCrEufUYhQ4RqiWG_lJ/view?usp=drive_link")
 
 
 def test_utils_ops():
     """Test utility operations functions for coordinate transformation and normalization."""
-    from ultralytics.utils.ops import (
+    from univi.utils.ops import (
         ltwh2xywh,
         ltwh2xyxy,
         make_divisible,
@@ -413,7 +413,7 @@ def test_utils_ops():
 
 def test_utils_files():
     """Test file handling utilities including file age, date, and paths with spaces."""
-    from ultralytics.utils.files import file_age, file_date, get_latest_run, spaces_in_path
+    from univi.utils.files import file_age, file_date, get_latest_run, spaces_in_path
 
     file_age(SOURCE)
     file_date(SOURCE)
@@ -430,7 +430,7 @@ def test_utils_patches_torch_save():
     """Test torch_save backoff when _torch_save raises RuntimeError to ensure robustness."""
     from unittest.mock import MagicMock, patch
 
-    from ultralytics.utils.patches import torch_save
+    from univi.utils.patches import torch_save
 
     mock = MagicMock(side_effect=RuntimeError)
 
@@ -443,7 +443,7 @@ def test_utils_patches_torch_save():
 
 def test_nn_modules_conv():
     """Test Convolutional Neural Network modules including CBAM, Conv2, and ConvTranspose."""
-    from ultralytics.nn.modules.conv import CBAM, Conv2, ConvTranspose, DWConvTranspose2d, Focus
+    from univi.nn.modules.conv import CBAM, Conv2, ConvTranspose, DWConvTranspose2d, Focus
 
     c1, c2 = 8, 16  # input and output channels
     x = torch.zeros(4, c1, 10, 10)  # BCHW
@@ -462,7 +462,7 @@ def test_nn_modules_conv():
 
 def test_nn_modules_block():
     """Test various blocks in neural network modules including C1, C3TR, BottleneckCSP, C3Ghost, and C3x."""
-    from ultralytics.nn.modules.block import C1, C3TR, BottleneckCSP, C3Ghost, C3x
+    from univi.nn.modules.block import C1, C3TR, BottleneckCSP, C3Ghost, C3x
 
     c1, c2 = 8, 16  # input and output channels
     x = torch.zeros(4, c1, 10, 10)  # BCHW
@@ -475,15 +475,15 @@ def test_nn_modules_block():
     BottleneckCSP(c1, c2)(x)
 
 
-@pytest.mark.skipif(not ONLINE, reason="environment is offline")
-def test_hub():
-    """Test Ultralytics HUB functionalities (e.g. export formats, logout)."""
-    from ultralytics.hub import export_fmts_hub, logout
-    from ultralytics.hub.utils import smart_request
+# @pytest.mark.skipif(not ONLINE, reason="environment is offline")
+# def test_hub():
+#     """Test Ultralytics HUB functionalities (e.g. export formats, logout)."""
+#     from univi.hub import export_fmts_hub, logout
+#     from univi.hub.utils import smart_request
 
-    export_fmts_hub()
-    logout()
-    smart_request("GET", "https://github.com", progress=True)
+#     export_fmts_hub()
+#     logout()
+#     smart_request("GET", "https://github.com", progress=True)
 
 
 @pytest.fixture
@@ -503,7 +503,7 @@ def image():
 )
 def test_classify_transforms_train(image, auto_augment, erasing, force_color_jitter):
     """Tests classification transforms during training with various augmentations to ensure proper functionality."""
-    from ultralytics.data.augment import classify_augmentations
+    from univi.data.augment import classify_augmentations
 
     transform = classify_augmentations(
         size=224,
@@ -565,7 +565,7 @@ def test_yolo_world():
     )
 
     # test WorWorldTrainerFromScratch
-    from ultralytics.models.yolo.world.train_world import WorldTrainerFromScratch
+    from univi.models.yolo.world.train_world import WorldTrainerFromScratch
 
     model = YOLO("yolov8s-worldv2.yaml")  # no YOLOv8n-world model yet
     model.train(
