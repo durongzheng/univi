@@ -7,7 +7,7 @@ from pathlib import Path
 import torch
 import torch.nn as nn
 
-from ultralytics.nn.modules import (
+from univi.nn.modules import (
     AIFI,
     C1,
     C2,
@@ -56,19 +56,20 @@ from ultralytics.nn.modules import (
     WorldDetect,
     v10Detect,
 )
-from ultralytics.utils import DEFAULT_CFG_DICT, DEFAULT_CFG_KEYS, LOGGER, colorstr, emojis, yaml_load
-from ultralytics.utils.checks import check_requirements, check_suffix, check_yaml
-from ultralytics.utils.loss import (
+from univi.utils import DEFAULT_CFG_DICT, DEFAULT_CFG_KEYS, LOGGER, colorstr, emojis, yaml_load
+from univi.utils.checks import check_requirements, check_suffix, check_yaml
+from univi.utils.loss import (
     E2EDetectLoss,
     v8ClassificationLoss,
+    v8MultiLabelClassificationLoss,
     v8DetectionLoss,
     v8OBBLoss,
     v8PoseLoss,
     v8SegmentationLoss,
 )
-from ultralytics.utils.ops import make_divisible
-from ultralytics.utils.plotting import feature_visualization
-from ultralytics.utils.torch_utils import (
+from univi.utils.ops import make_divisible
+from univi.utils.plotting import feature_visualization
+from univi.utils.torch_utils import (
     fuse_conv_and_bn,
     fuse_deconv_and_bn,
     initialize_weights,
@@ -472,6 +473,54 @@ class ClassificationModel(BaseModel):
         """Initialize the loss criterion for the ClassificationModel."""
         return v8ClassificationLoss()
 
+class MultiLabelClassificationModel(BaseModel):
+    """YOLOv8 classification model."""
+
+    def __init__(self, cfg="yolov8n-cls.yaml", ch=3, nc=None, verbose=True):
+        """Init ClassificationModel with YAML, channels, number of classes, verbose flag."""
+        super().__init__()
+        self._from_yaml(cfg, ch, nc, verbose)
+
+    def _from_yaml(self, cfg, ch, nc, verbose):
+        """Set YOLOv8 model configurations and define the model architecture."""
+        self.yaml = cfg if isinstance(cfg, dict) else yaml_model_load(cfg)  # cfg dict
+
+        # Define model
+        ch = self.yaml["ch"] = self.yaml.get("ch", ch)  # input channels
+        if nc and nc != self.yaml["nc"]:
+            LOGGER.info(f"Overriding model.yaml nc={self.yaml['nc']} with nc={nc}")
+            self.yaml["nc"] = nc  # override YAML value
+        elif not nc and not self.yaml.get("nc", None):
+            raise ValueError("nc not specified. Must specify nc in model.yaml or function arguments.")
+        self.model, self.save = parse_model(deepcopy(self.yaml), ch=ch, verbose=verbose)  # model, savelist
+        self.stride = torch.Tensor([1])  # no stride constraints
+        self.names = {i: f"{i}" for i in range(self.yaml["nc"])}  # default names dict
+        self.info()
+
+    @staticmethod
+    def reshape_outputs(model, nc):
+        """Update a TorchVision classification model to class count 'n' if required."""
+        name, m = list((model.model if hasattr(model, "model") else model).named_children())[-1]  # last module
+        if isinstance(m, Classify):  # YOLO Classify() head
+            if m.linear.out_features != nc:
+                m.linear = nn.Linear(m.linear.in_features, nc)
+        elif isinstance(m, nn.Linear):  # ResNet, EfficientNet
+            if m.out_features != nc:
+                setattr(model, name, nn.Linear(m.in_features, nc))
+        elif isinstance(m, nn.Sequential):
+            types = [type(x) for x in m]
+            if nn.Linear in types:
+                i = len(types) - 1 - types[::-1].index(nn.Linear)  # last nn.Linear index
+                if m[i].out_features != nc:
+                    m[i] = nn.Linear(m[i].in_features, nc)
+            elif nn.Conv2d in types:
+                i = len(types) - 1 - types[::-1].index(nn.Conv2d)  # last nn.Conv2d index
+                if m[i].out_channels != nc:
+                    m[i] = nn.Conv2d(m[i].in_channels, nc, m[i].kernel_size, m[i].stride, bias=m[i].bias is not None)
+
+    def init_criterion(self):
+        """Initialize the loss criterion for the ClassificationModel."""
+        return v8MultiLabelClassificationLoss()
 
 class RTDETRDetectionModel(DetectionModel):
     """
@@ -507,7 +556,7 @@ class RTDETRDetectionModel(DetectionModel):
 
     def init_criterion(self):
         """Initialize the loss criterion for the RTDETRDetectionModel."""
-        from ultralytics.models.utils.loss import RTDETRDetectionLoss
+        from univi.models.utils.loss import RTDETRDetectionLoss
 
         return RTDETRDetectionLoss(nc=self.nc, use_vfl=True)
 
@@ -762,7 +811,7 @@ def torch_safe_load(weight):
     Returns:
         (dict): The loaded PyTorch model.
     """
-    from ultralytics.utils.downloads import attempt_download_asset
+    from univi.utils.downloads import attempt_download_asset
 
     check_suffix(file=weight, suffix=".pt")
     file = attempt_download_asset(weight)  # search online if missing locally

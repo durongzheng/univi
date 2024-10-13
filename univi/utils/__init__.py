@@ -24,7 +24,7 @@ import torch
 import yaml
 from tqdm import tqdm as tqdm_original
 
-from ultralytics import __version__
+from univi import __version__
 
 # PyTorch Multi-GPU DDP Constants
 RANK = int(os.getenv("RANK", -1))
@@ -949,8 +949,8 @@ class SettingsManager(dict):
         import copy
         import hashlib
 
-        from ultralytics.utils.checks import check_version
-        from ultralytics.utils.torch_utils import torch_distributed_zero_first
+        from univi.utils.checks import check_version
+        from univi.utils.torch_utils import torch_distributed_zero_first
 
         root = GIT_DIR or Path()
         datasets_root = (root.parent if GIT_DIR and is_dir_writeable(root.parent) else root).resolve()
@@ -1073,7 +1073,7 @@ TESTS_RUNNING = is_pytest_running() or is_github_action_running()
 set_sentry()
 
 # Apply monkey patches
-from ultralytics.utils.patches import imread, imshow, imwrite, torch_load, torch_save
+from univi.utils.patches import imread, imshow, imwrite, torch_load, torch_save
 
 torch.load = torch_load
 torch.save = torch_save

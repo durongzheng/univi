@@ -4,10 +4,10 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from ultralytics.utils.metrics import OKS_SIGMA
-from ultralytics.utils.ops import crop_mask, xywh2xyxy, xyxy2xywh
-from ultralytics.utils.tal import RotatedTaskAlignedAssigner, TaskAlignedAssigner, dist2bbox, dist2rbox, make_anchors
-from ultralytics.utils.torch_utils import autocast
+from univi.utils.metrics import OKS_SIGMA
+from univi.utils.ops import crop_mask, xywh2xyxy, xyxy2xywh
+from univi.utils.tal import RotatedTaskAlignedAssigner, TaskAlignedAssigner, dist2bbox, dist2rbox, make_anchors
+from univi.utils.torch_utils import autocast
 
 from .metrics import bbox_iou, probiou
 from .tal import bbox2dist
@@ -603,6 +603,16 @@ class v8ClassificationLoss:
     def __call__(self, preds, batch):
         """Compute the classification loss between predictions and true labels."""
         loss = F.cross_entropy(preds, batch["cls"], reduction="mean")
+        loss_items = loss.detach()
+        return loss, loss_items
+    
+class v8MultiLabelClassificationLoss:
+    """Criterion class for computing training losses."""
+
+    def __call__(self, preds, batch):
+        """Compute the multilabel classification loss between predictions and true labels."""
+        preds = F.sigmoid(preds)
+        loss = F.binary_cross_entropy(preds, batch["cls"], reduction="mean")
         loss_items = loss.detach()
         return loss, loss_items
 

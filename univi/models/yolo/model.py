@@ -2,10 +2,10 @@
 
 from pathlib import Path
 
-from ultralytics.engine.model import Model
-from ultralytics.models import yolo
-from ultralytics.nn.tasks import ClassificationModel, DetectionModel, OBBModel, PoseModel, SegmentationModel, WorldModel
-from ultralytics.utils import ROOT, yaml_load
+from univi.engine.model import Model
+from univi.models import yolo
+from univi.nn.tasks import ClassificationModel, MultiLabelClassificationModel, DetectionModel, OBBModel, PoseModel, SegmentationModel, WorldModel
+from univi.utils import ROOT, yaml_load
 
 
 class YOLO(Model):
@@ -28,6 +28,12 @@ class YOLO(Model):
         return {
             "classify": {
                 "model": ClassificationModel,
+                "trainer": yolo.classify.ClassificationTrainer,
+                "validator": yolo.classify.ClassificationValidator,
+                "predictor": yolo.classify.ClassificationPredictor,
+            },
+            "multi_classify": {
+                "model": MultiLabelClassificationModel,
                 "trainer": yolo.classify.ClassificationTrainer,
                 "validator": yolo.classify.ClassificationValidator,
                 "predictor": yolo.classify.ClassificationPredictor,
