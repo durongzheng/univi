@@ -22,7 +22,7 @@ Requirements:
     $ pip install "ultralytics[export]"
 
 Python:
-    from ultralytics import YOLO
+    from univi import YOLO
     model = YOLO('yolov8n.pt')
     results = model.export(format='onnx')
 
@@ -64,14 +64,14 @@ from pathlib import Path
 import numpy as np
 import torch
 
-from ultralytics.cfg import TASK2DATA, get_cfg
-from ultralytics.data import build_dataloader
-from ultralytics.data.dataset import YOLODataset
-from ultralytics.data.utils import check_cls_dataset, check_det_dataset
-from ultralytics.nn.autobackend import check_class_names, default_class_names
-from ultralytics.nn.modules import C2f, Detect, RTDETRDecoder
-from ultralytics.nn.tasks import DetectionModel, SegmentationModel, WorldModel
-from ultralytics.utils import (
+from univi.cfg import TASK2DATA, get_cfg
+from univi.data import build_dataloader
+from univi.data.dataset import YOLODataset
+from univi.data.utils import check_cls_dataset, check_det_dataset
+from univi.nn.autobackend import check_class_names, default_class_names
+from univi.nn.modules import C2f, Detect, RTDETRDecoder
+from univi.nn.tasks import DetectionModel, SegmentationModel, WorldModel
+from univi.utils import (
     ARM64,
     DEFAULT_CFG,
     IS_JETSON,
@@ -87,16 +87,16 @@ from ultralytics.utils import (
     get_default_args,
     yaml_save,
 )
-from ultralytics.utils.checks import check_imgsz, check_is_path_safe, check_requirements, check_version
-from ultralytics.utils.downloads import attempt_download_asset, get_github_assets, safe_download
-from ultralytics.utils.files import file_size, spaces_in_path
-from ultralytics.utils.ops import Profile
-from ultralytics.utils.torch_utils import TORCH_1_13, get_latest_opset, select_device, smart_inference_mode
+from univi.utils.checks import check_imgsz, check_is_path_safe, check_requirements, check_version
+from univi.utils.downloads import attempt_download_asset, get_github_assets, safe_download
+from univi.utils.files import file_size, spaces_in_path
+from univi.utils.ops import Profile
+from univi.utils.torch_utils import TORCH_1_13, get_latest_opset, select_device, smart_inference_mode
 
 
 def export_formats():
     """YOLOv8 export formats."""
-    import pandas  # scope for faster 'import ultralytics'
+    import pandas  # scope for faster 'import univi'
 
     x = [
         ["PyTorch", "-", ".pt", True, True],
@@ -274,10 +274,10 @@ class Exporter:
         )
         self.pretty_name = Path(self.model.yaml.get("yaml_file", self.file)).stem.replace("yolo", "YOLO")
         data = model.args["data"] if hasattr(model, "args") and isinstance(model.args, dict) else ""
-        description = f'Ultralytics {self.pretty_name} model {f"trained on {data}" if data else ""}'
+        description = f'univi {self.pretty_name} model {f"trained on {data}" if data else ""}'
         self.metadata = {
             "description": description,
-            "author": "Ultralytics",
+            "author": "univi",
             "date": datetime.now().isoformat(),
             "version": __version__,
             "license": "AGPL-3.0 License (https://ultralytics.com/license)",
@@ -745,7 +745,7 @@ class Exporter:
             class EngineCalibrator(trt.IInt8Calibrator):
                 def __init__(
                     self,
-                    dataset,  # ultralytics.data.build.InfiniteDataLoader
+                    dataset,  # univi.data.build.InfiniteDataLoader
                     batch: int,
                     cache: str = "",
                 ) -> None:

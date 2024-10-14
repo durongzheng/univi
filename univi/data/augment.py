@@ -10,13 +10,13 @@ import numpy as np
 import torch
 from PIL import Image
 
-from ultralytics.data.utils import polygons2masks, polygons2masks_overlap
-from ultralytics.utils import LOGGER, colorstr
-from ultralytics.utils.checks import check_version
-from ultralytics.utils.instance import Instances
-from ultralytics.utils.metrics import bbox_ioa
-from ultralytics.utils.ops import segment2box, xyxyxyxy2xywhr
-from ultralytics.utils.torch_utils import TORCHVISION_0_10, TORCHVISION_0_11, TORCHVISION_0_13
+from univi.data.utils import polygons2masks, polygons2masks_overlap
+from univi.utils import LOGGER, colorstr
+from univi.utils.checks import check_version
+from univi.utils.instance import Instances
+from univi.utils.metrics import bbox_ioa
+from univi.utils.ops import segment2box, xyxyxyxy2xywhr
+from univi.utils.torch_utils import TORCHVISION_0_10, TORCHVISION_0_11, TORCHVISION_0_13
 
 DEFAULT_MEAN = (0.0, 0.0, 0.0)
 DEFAULT_STD = (1.0, 1.0, 1.0)
@@ -174,7 +174,7 @@ class Compose:
             transforms (List[Callable]): A list of callable transform objects to be applied sequentially.
 
         Examples:
-            >>> from ultralytics.data.augment import Compose, RandomHSV, RandomFlip
+            >>> from univi.data.augment import Compose, RandomHSV, RandomFlip
             >>> transforms = [RandomHSV(), RandomFlip()]
             >>> compose = Compose(transforms)
         """
@@ -512,7 +512,7 @@ class Mosaic(BaseMixTransform):
         _cat_labels: Concatenates labels and clips mosaic border instances.
 
     Examples:
-        >>> from ultralytics.data.augment import Mosaic
+        >>> from univi.data.augment import Mosaic
         >>> dataset = YourDataset(...)  # Your image dataset
         >>> mosaic_aug = Mosaic(dataset, imgsz=640, p=0.5, n=4)
         >>> augmented_labels = mosaic_aug(original_labels)
@@ -532,7 +532,7 @@ class Mosaic(BaseMixTransform):
             n (int): The grid size, either 4 (for 2x2) or 9 (for 3x3).
 
         Examples:
-            >>> from ultralytics.data.augment import Mosaic
+            >>> from univi.data.augment import Mosaic
             >>> dataset = YourDataset(...)
             >>> mosaic_aug = Mosaic(dataset, imgsz=640, p=0.5, n=4)
         """
@@ -879,7 +879,7 @@ class MixUp(BaseMixTransform):
         _mix_transform: Applies MixUp augmentation to the input labels.
 
     Examples:
-        >>> from ultralytics.data.augment import MixUp
+        >>> from univi.data.augment import MixUp
         >>> dataset = YourDataset(...)  # Your image dataset
         >>> mixup = MixUp(dataset, p=0.5)
         >>> augmented_labels = mixup(original_labels)
@@ -898,7 +898,7 @@ class MixUp(BaseMixTransform):
             p (float): Probability of applying MixUp augmentation to an image. Must be in the range [0, 1].
 
         Examples:
-            >>> from ultralytics.data.dataset import YOLODataset
+            >>> from univi.data.dataset import YOLODataset
             >>> dataset = YOLODataset('path/to/data.yaml')
             >>> mixup = MixUp(dataset, pre_transform=None, p=0.5)
         """
@@ -1315,7 +1315,7 @@ class RandomHSV:
 
     Examples:
         >>> import numpy as np
-        >>> from ultralytics.data.augment import RandomHSV
+        >>> from univi.data.augment import RandomHSV
         >>> augmenter = RandomHSV(hgain=0.5, sgain=0.5, vgain=0.5)
         >>> image = np.random.randint(0, 255, (100, 100, 3), dtype=np.uint8)
         >>> labels = {"img": image}
@@ -1438,13 +1438,13 @@ class RandomFlip:
         Args:
             labels (Dict): A dictionary containing the following keys:
                 'img' (numpy.ndarray): The image to be flipped.
-                'instances' (ultralytics.utils.instance.Instances): An object containing bounding boxes and
+                'instances' (univi.utils.instance.Instances): An object containing bounding boxes and
                     optionally keypoints.
 
         Returns:
             (Dict): The same dictionary with the flipped image and updated instances:
                 'img' (numpy.ndarray): The flipped image.
-                'instances' (ultralytics.utils.instance.Instances): Updated instances matching the flipped image.
+                'instances' (univi.utils.instance.Instances): Updated instances matching the flipped image.
 
         Examples:
             >>> labels = {'img': np.random.rand(640, 640, 3), 'instances': Instances(...)}
@@ -1675,7 +1675,7 @@ class CopyPaste:
             labels (Dict): A dictionary containing:
                 - 'img' (np.ndarray): The image to augment.
                 - 'cls' (np.ndarray): Class labels for the instances.
-                - 'instances' (ultralytics.engine.results.Instances): Object containing bounding boxes, segments, etc.
+                - 'instances' (univi.engine.results.Instances): Object containing bounding boxes, segments, etc.
 
         Returns:
             (Dict): Dictionary with augmented image and updated instances under 'img', 'cls', and 'instances' keys.
@@ -2276,7 +2276,7 @@ def v8_transforms(dataset, imgsz, hyp, stretch=False):
         (Compose): A composition of image transformations to be applied to the dataset.
 
     Examples:
-        >>> from ultralytics.data.dataset import YOLODataset
+        >>> from univi.data.dataset import YOLODataset
         >>> dataset = YOLODataset(img_path='path/to/images', imgsz=640)
         >>> hyp = {'mosaic': 1.0, 'copy_paste': 0.5, 'degrees': 10.0, 'translate': 0.2, 'scale': 0.9}
         >>> transforms = v8_transforms(dataset, imgsz=640, hyp=hyp)
@@ -2348,7 +2348,7 @@ def classify_transforms(
         >>> img = Image.open('path/to/image.jpg')
         >>> transformed_img = transforms(img)
     """
-    import torchvision.transforms as T  # scope for faster 'import ultralytics'
+    import torchvision.transforms as T  # scope for faster 'import univi'
 
     if isinstance(size, (tuple, list)):
         assert len(size) == 2, f"'size' tuples must be length 2, not length {len(size)}"
@@ -2421,7 +2421,7 @@ def classify_augmentations(
         >>> augmented_image = transforms(original_image)
     """
     # Transforms to apply if Albumentations not installed
-    import torchvision.transforms as T  # scope for faster 'import ultralytics'
+    import torchvision.transforms as T  # scope for faster 'import univi'
 
     if not isinstance(size, int):
         raise TypeError(f"classify_transforms() size {size} must be integer, not (list, tuple)")

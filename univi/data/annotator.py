@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from ultralytics import SAM, YOLO
+from univi import SAM, YOLO
 
 
 def auto_annotate(data, det_model="yolov8x.pt", sam_model="sam_b.pt", device="", output_dir=None):
@@ -20,8 +20,8 @@ def auto_annotate(data, det_model="yolov8x.pt", sam_model="sam_b.pt", device="",
         output_dir (str | None): Directory to save the annotated results. If None, a default directory is created.
 
     Examples:
-        >>> from ultralytics.data.annotator import auto_annotate
-        >>> auto_annotate(data='ultralytics/assets', det_model='yolov8n.pt', sam_model='mobile_sam.pt')
+        >>> from univi.data.annotator import auto_annotate
+        >>> auto_annotate(data='univi/assets', det_model='yolov8n.pt', sam_model='mobile_sam.pt')
 
     Notes:
         - The function creates a new directory for output if not specified.

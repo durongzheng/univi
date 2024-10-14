@@ -5,8 +5,8 @@ import json
 import cv2
 import numpy as np
 
-from ultralytics.utils.checks import check_imshow, check_requirements
-from ultralytics.utils.plotting import Annotator
+from univi.utils.checks import check_imshow, check_requirements
+from univi.utils.plotting import Annotator
 
 
 class ParkingPtsSelection:
@@ -198,7 +198,7 @@ class ParkingManagement:
 
     def load_model(self):
         """Load the Ultralytics YOLO model for inference and analytics."""
-        from ultralytics import YOLO
+        from univi import YOLO
 
         return YOLO(self.model_path)
 

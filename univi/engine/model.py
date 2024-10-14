@@ -68,7 +68,7 @@ class Model(nn.Module):
         reset_callbacks: Resets all callbacks to their default functions.
 
     Examples:
-        >>> from ultralytics import YOLO
+        >>> from univi import YOLO
         >>> model = YOLO('yolov8n.pt')
         >>> results = model.predict('image.jpg')
         >>> model.train(data='coco128.yaml', epochs=3)

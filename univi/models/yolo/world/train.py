@@ -2,11 +2,11 @@
 
 import itertools
 
-from ultralytics.data import build_yolo_dataset
-from ultralytics.models import yolo
-from ultralytics.nn.tasks import WorldModel
-from ultralytics.utils import DEFAULT_CFG, RANK, checks
-from ultralytics.utils.torch_utils import de_parallel
+from univi.data import build_yolo_dataset
+from univi.models import yolo
+from univi.nn.tasks import WorldModel
+from univi.utils import DEFAULT_CFG, RANK, checks
+from univi.utils.torch_utils import de_parallel
 
 
 def on_pretrain_routine_end(trainer):
@@ -27,7 +27,7 @@ class WorldTrainer(yolo.detect.DetectionTrainer):
 
     Example:
         ```python
-        from ultralytics.models.yolo.world import WorldModel
+        from univi.models.yolo.world import WorldModel
 
         args = dict(model='yolov8s-world.pt', data='coco8.yaml', epochs=3)
         trainer = WorldTrainer(overrides=args)

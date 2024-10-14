@@ -12,11 +12,11 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
-from ultralytics.data.augment import LetterBox
-from ultralytics.engine.predictor import BasePredictor
-from ultralytics.engine.results import Results
-from ultralytics.utils import DEFAULT_CFG, ops
-from ultralytics.utils.torch_utils import select_device
+from univi.data.augment import LetterBox
+from univi.engine.predictor import BasePredictor
+from univi.engine.results import Results
+from univi.utils import DEFAULT_CFG, ops
+from univi.utils.torch_utils import select_device
 
 from .amg import (
     batch_iterator,

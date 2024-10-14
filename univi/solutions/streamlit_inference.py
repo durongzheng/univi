@@ -6,8 +6,8 @@ import time
 import cv2
 import torch
 
-from ultralytics.utils.checks import check_requirements
-from ultralytics.utils.downloads import GITHUB_ASSETS_STEMS
+from univi.utils.checks import check_requirements
+from univi.utils.downloads import GITHUB_ASSETS_STEMS
 
 
 def inference(model=None):
@@ -15,7 +15,7 @@ def inference(model=None):
     check_requirements("streamlit>=1.29.0")  # scope imports for faster ultralytics package load speeds
     import streamlit as st
 
-    from ultralytics import YOLO
+    from univi import YOLO
 
     # Hide main menu style
     menu_style_cfg = """<style>MainMenu {visibility: hidden;}</style>"""

@@ -21,10 +21,10 @@ import torch
 from torch import distributed as dist
 from torch import nn, optim
 
-from ultralytics.cfg import get_cfg, get_save_dir
-from ultralytics.data.utils import check_cls_dataset, check_det_dataset
-from ultralytics.nn.tasks import attempt_load_one_weight, attempt_load_weights
-from ultralytics.utils import (
+from univi.cfg import get_cfg, get_save_dir
+from univi.data.utils import check_cls_dataset, check_det_dataset
+from univi.nn.tasks import attempt_load_one_weight, attempt_load_weights
+from univi.utils import (
     DEFAULT_CFG,
     LOCAL_RANK,
     LOGGER,
@@ -37,11 +37,11 @@ from ultralytics.utils import (
     emojis,
     yaml_save,
 )
-from ultralytics.utils.autobatch import check_train_batch_size
-from ultralytics.utils.checks import check_amp, check_file, check_imgsz, check_model_file_from_stem, print_args
-from ultralytics.utils.dist import ddp_cleanup, generate_ddp_command
-from ultralytics.utils.files import get_latest_run
-from ultralytics.utils.torch_utils import (
+from univi.utils.autobatch import check_train_batch_size
+from univi.utils.checks import check_amp, check_file, check_imgsz, check_model_file_from_stem, print_args
+from univi.utils.dist import ddp_cleanup, generate_ddp_command
+from univi.utils.files import get_latest_run
+from univi.utils.torch_utils import (
     EarlyStopping,
     ModelEMA,
     autocast,
@@ -253,7 +253,7 @@ class BaseTrainer:
             elif not v.requires_grad and v.dtype.is_floating_point:  # only floating point Tensor can require gradients
                 LOGGER.info(
                     f"WARNING ⚠️ setting 'requires_grad=True' for frozen layer '{k}'. "
-                    "See ultralytics.engine.trainer for customization of frozen layers."
+                    "See univi.engine.trainer for customization of frozen layers."
                 )
                 v.requires_grad = True
 
@@ -480,7 +480,7 @@ class BaseTrainer:
         """Save model training checkpoints with additional metadata."""
         import io
 
-        import pandas as pd  # scope for faster 'import ultralytics'
+        import pandas as pd  # scope for faster 'import univi'
 
         # Serialize ckpt to a byte buffer once (faster than repeated torch.save() calls)
         buffer = io.BytesIO()

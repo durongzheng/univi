@@ -17,7 +17,7 @@ import torch.distributed as dist
 import torch.nn as nn
 import torch.nn.functional as F
 
-from ultralytics.utils import (
+from univi.utils import (
     DEFAULT_CFG_DICT,
     DEFAULT_CFG_KEYS,
     LOGGER,
@@ -27,7 +27,7 @@ from ultralytics.utils import (
     __version__,
     colorstr,
 )
-from ultralytics.utils.checks import check_version
+from univi.utils.checks import check_version
 
 try:
     import thop
@@ -339,7 +339,7 @@ def model_info_for_loggers(trainer):
         ```
     """
     if trainer.args.profile:  # profile ONNX and TensorRT times
-        from ultralytics.utils.benchmarks import ProfileModels
+        from univi.utils.benchmarks import ProfileModels
 
         results = ProfileModels([trainer.last], device=trainer.device).profile()[0]
         results.pop("model/name")
@@ -540,7 +540,7 @@ def strip_optimizer(f: Union[str, Path] = "best.pt", s: str = "") -> None:
     Example:
         ```python
         from pathlib import Path
-        from ultralytics.utils.torch_utils import strip_optimizer
+        from univi.utils.torch_utils import strip_optimizer
 
         for f in Path('path/to/model/checkpoints').rglob('*.pt'):
             strip_optimizer(f)
@@ -609,7 +609,7 @@ def profile(input, ops, n=10, device=None):
 
     Example:
         ```python
-        from ultralytics.utils.torch_utils import profile
+        from univi.utils.torch_utils import profile
 
         input = torch.randn(16, 3, 640, 640)
         m1 = lambda x: x * torch.sigmoid(x)

@@ -7,8 +7,8 @@ from pathlib import Path
 import cv2
 import numpy as np
 
-from ultralytics.utils import LOGGER, TQDM
-from ultralytics.utils.files import increment_path
+from univi.utils import LOGGER, TQDM
+from univi.utils.files import increment_path
 
 
 def coco91_to_coco80_class():
@@ -234,7 +234,7 @@ def convert_coco(
 
     Example:
         ```python
-        from ultralytics.data.converter import convert_coco
+        from univi.data.converter import convert_coco
 
         convert_coco('../datasets/coco/annotations/', use_segments=True, use_keypoints=False, cls91to80=True)
         convert_coco('../datasets/lvis/annotations/', use_segments=True, use_keypoints=False, cls91to80=False, lvis=True)
@@ -348,7 +348,7 @@ def convert_segment_masks_to_yolo_seg(masks_dir, output_dir, classes):
 
     Example:
         ```python
-        from ultralytics.data.converter import convert_segment_masks_to_yolo_seg
+        from univi.data.converter import convert_segment_masks_to_yolo_seg
 
         # The classes here is the total classes in the dataset, for COCO dataset we have 80 classes
         convert_segment_masks_to_yolo_seg('path/to/masks_directory', 'path/to/output/directory', classes=80)
@@ -427,7 +427,7 @@ def convert_dota_to_yolo_obb(dota_root_path: str):
 
     Example:
         ```python
-        from ultralytics.data.converter import convert_dota_to_yolo_obb
+        from univi.data.converter import convert_dota_to_yolo_obb
 
         convert_dota_to_yolo_obb('path/to/DOTA')
         ```
@@ -601,10 +601,10 @@ def yolo_bbox2segment(im_dir, save_dir=None, sam_model="sam_b.pt"):
     """
     from tqdm import tqdm
 
-    from ultralytics import SAM
-    from ultralytics.data import YOLODataset
-    from ultralytics.utils import LOGGER
-    from ultralytics.utils.ops import xywh2xyxy
+    from univi import SAM
+    from univi.data import YOLODataset
+    from univi.utils import LOGGER
+    from univi.utils.ops import xywh2xyxy
 
     # NOTE: add placeholder to pass class index check
     dataset = YOLODataset(im_dir, data=dict(names=list(range(1000))))

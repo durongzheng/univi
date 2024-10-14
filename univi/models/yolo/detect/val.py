@@ -6,12 +6,12 @@ from pathlib import Path
 import numpy as np
 import torch
 
-from ultralytics.data import build_dataloader, build_yolo_dataset, converter
-from ultralytics.engine.validator import BaseValidator
-from ultralytics.utils import LOGGER, ops
-from ultralytics.utils.checks import check_requirements
-from ultralytics.utils.metrics import ConfusionMatrix, DetMetrics, box_iou
-from ultralytics.utils.plotting import output_to_target, plot_images
+from univi.data import build_dataloader, build_yolo_dataset, converter
+from univi.engine.validator import BaseValidator
+from univi.utils import LOGGER, ops
+from univi.utils.checks import check_requirements
+from univi.utils.metrics import ConfusionMatrix, DetMetrics, box_iou
+from univi.utils.plotting import output_to_target, plot_images
 
 
 class DetectionValidator(BaseValidator):
@@ -20,7 +20,7 @@ class DetectionValidator(BaseValidator):
 
     Example:
         ```python
-        from ultralytics.models.yolo.detect import DetectionValidator
+        from univi.models.yolo.detect import DetectionValidator
 
         args = dict(model='yolov8n.pt', data='coco8.yaml')
         validator = DetectionValidator(args=args)
@@ -269,7 +269,7 @@ class DetectionValidator(BaseValidator):
 
     def save_one_txt(self, predn, save_conf, shape, file):
         """Save YOLO detections to a txt file in normalized coordinates in a specific format."""
-        from ultralytics.engine.results import Results
+        from univi.engine.results import Results
 
         Results(
             np.zeros((shape[0], shape[1]), dtype=np.uint8),

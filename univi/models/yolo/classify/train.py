@@ -2,13 +2,13 @@
 
 import torch
 
-from ultralytics.data import ClassificationDataset, build_dataloader
-from ultralytics.engine.trainer import BaseTrainer
-from ultralytics.models import yolo
-from ultralytics.nn.tasks import ClassificationModel
-from ultralytics.utils import DEFAULT_CFG, LOGGER, RANK, colorstr
-from ultralytics.utils.plotting import plot_images, plot_results
-from ultralytics.utils.torch_utils import is_parallel, strip_optimizer, torch_distributed_zero_first
+from univi.data import ClassificationDataset, build_dataloader
+from univi.engine.trainer import BaseTrainer
+from univi.models import yolo
+from univi.nn.tasks import ClassificationModel
+from univi.utils import DEFAULT_CFG, LOGGER, RANK, colorstr
+from univi.utils.plotting import plot_images, plot_results
+from univi.utils.torch_utils import is_parallel, strip_optimizer, torch_distributed_zero_first
 
 
 class ClassificationTrainer(BaseTrainer):
@@ -20,7 +20,7 @@ class ClassificationTrainer(BaseTrainer):
 
     Example:
         ```python
-        from ultralytics.models.yolo.classify import ClassificationTrainer
+        from univi.models.yolo.classify import ClassificationTrainer
 
         args = dict(model='yolov8n-cls.pt', data='imagenet10', epochs=3)
         trainer = ClassificationTrainer(overrides=args)
@@ -58,7 +58,7 @@ class ClassificationTrainer(BaseTrainer):
 
     def setup_model(self):
         """Load, create or download model for any task."""
-        import torchvision  # scope for faster 'import ultralytics'
+        import torchvision  # scope for faster 'import univi'
 
         if str(self.model) in torchvision.models.__dict__:
             self.model = torchvision.models.__dict__[self.model](

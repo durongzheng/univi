@@ -4,9 +4,9 @@ import sys
 import time
 from threading import Thread
 
-from ultralytics import Explorer
-from ultralytics.utils import ROOT, SETTINGS
-from ultralytics.utils.checks import check_requirements
+from univi import Explorer
+from univi.utils import ROOT, SETTINGS
+from univi.utils.checks import check_requirements
 
 check_requirements(("streamlit>=1.29.0", "streamlit-select>=0.3"))
 
@@ -160,7 +160,7 @@ def run_ai_query():
             'OpenAI API key not found in settings. Please run yolo settings openai_api_key="..."'
         )
         return
-    import pandas  # scope for faster 'import ultralytics'
+    import pandas  # scope for faster 'import univi'
 
     st.session_state["error"] = None
     query = st.session_state.get("ai_query")

@@ -3,8 +3,8 @@
 import PIL
 import pytest
 
-from ultralytics import Explorer
-from ultralytics.utils import ASSETS
+from univi import Explorer
+from univi.utils import ASSETS
 
 
 @pytest.mark.slow

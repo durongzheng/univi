@@ -10,8 +10,8 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
-from ultralytics.utils import LOGGER
-from ultralytics.utils.metrics import batch_probiou
+from univi.utils import LOGGER
+from univi.utils.metrics import batch_probiou
 
 
 class Profile(contextlib.ContextDecorator):
@@ -20,7 +20,7 @@ class Profile(contextlib.ContextDecorator):
 
     Example:
         ```python
-        from ultralytics.utils.ops import Profile
+        from univi.utils.ops import Profile
 
         with Profile(device=device) as dt:
             pass  # slow operation here

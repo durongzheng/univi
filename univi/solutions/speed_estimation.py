@@ -6,8 +6,8 @@ from time import time
 import cv2
 import numpy as np
 
-from ultralytics.utils.checks import check_imshow
-from ultralytics.utils.plotting import Annotator, colors
+from univi.utils.checks import check_imshow
+from univi.utils.plotting import Annotator, colors
 
 
 class SpeedEstimator:

@@ -15,9 +15,9 @@ import requests
 import torch
 from PIL import Image
 
-from ultralytics.data.utils import FORMATS_HELP_MSG, IMG_FORMATS, VID_FORMATS
-from ultralytics.utils import IS_COLAB, IS_KAGGLE, LOGGER, ops
-from ultralytics.utils.checks import check_requirements
+from univi.data.utils import FORMATS_HELP_MSG, IMG_FORMATS, VID_FORMATS
+from univi.utils import IS_COLAB, IS_KAGGLE, LOGGER, ops
+from univi.utils.checks import check_requirements
 
 
 @dataclass

@@ -4,9 +4,9 @@ import cv2
 import torch
 from PIL import Image
 
-from ultralytics.engine.predictor import BasePredictor
-from ultralytics.engine.results import Results
-from ultralytics.utils import DEFAULT_CFG, ops
+from univi.engine.predictor import BasePredictor
+from univi.engine.results import Results
+from univi.utils import DEFAULT_CFG, ops
 
 
 class ClassificationPredictor(BasePredictor):
@@ -18,8 +18,8 @@ class ClassificationPredictor(BasePredictor):
 
     Example:
         ```python
-        from ultralytics.utils import ASSETS
-        from ultralytics.models.yolo.classify import ClassificationPredictor
+        from univi.utils import ASSETS
+        from univi.models.yolo.classify import ClassificationPredictor
 
         args = dict(model='yolov8n-cls.pt', source=ASSETS)
         predictor = ClassificationPredictor(overrides=args)
@@ -31,7 +31,7 @@ class ClassificationPredictor(BasePredictor):
         """Initializes ClassificationPredictor setting the task to 'classify'."""
         super().__init__(cfg, overrides, _callbacks)
         self.args.task = "classify"
-        self._legacy_transform_name = "ultralytics.yolo.data.augment.ToTensor"
+        self._legacy_transform_name = "univi.yolo.data.augment.ToTensor"
 
     def preprocess(self, img):
         """Converts input image to model-compatible data type."""

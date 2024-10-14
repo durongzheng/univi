@@ -55,7 +55,7 @@ HELP_MSG = """
 
     2. Use the Python SDK:
 
-        from ultralytics import YOLO
+        from univi import YOLO
 
         # Load a model
         model = YOLO("yolov8n.yaml")  # build a new model from scratch
@@ -301,7 +301,7 @@ class ThreadingLocked:
 
     Example:
         ```python
-        from ultralytics.utils import ThreadingLocked
+        from univi.utils import ThreadingLocked
 
         @ThreadingLocked()
         def my_function():

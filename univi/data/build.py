@@ -9,8 +9,8 @@ import torch
 from PIL import Image
 from torch.utils.data import dataloader, distributed
 
-from ultralytics.data.dataset import GroundingDataset, YOLODataset, YOLOMultiModalDataset
-from ultralytics.data.loaders import (
+from univi.data.dataset import GroundingDataset, YOLODataset, YOLOMultiModalDataset
+from univi.data.loaders import (
     LOADERS,
     LoadImagesAndVideos,
     LoadPilAndNumpy,
@@ -20,9 +20,9 @@ from ultralytics.data.loaders import (
     SourceTypes,
     autocast_list,
 )
-from ultralytics.data.utils import IMG_FORMATS, PIN_MEMORY, VID_FORMATS
-from ultralytics.utils import RANK, colorstr
-from ultralytics.utils.checks import check_file
+from univi.data.utils import IMG_FORMATS, PIN_MEMORY, VID_FORMATS
+from univi.utils import RANK, colorstr
+from univi.utils.checks import check_file
 
 
 class InfiniteDataLoader(dataloader.DataLoader):

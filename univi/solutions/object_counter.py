@@ -4,8 +4,8 @@ from collections import defaultdict
 
 import cv2
 
-from ultralytics.utils.checks import check_imshow, check_requirements
-from ultralytics.utils.plotting import Annotator, colors
+from univi.utils.checks import check_imshow, check_requirements
+from univi.utils.plotting import Annotator, colors
 
 check_requirements("shapely>=2.0.0")
 

@@ -18,8 +18,8 @@ class MultiLabelClassificationPredictor(BasePredictor):
 
     Example:
         ```python
-        from ultralytics.utils import ASSETS
-        from ultralytics.models.yolo.classify import ClassificationPredictor
+        from univi.utils import ASSETS
+        from univi.models.yolo.classify import ClassificationPredictor
 
         args = dict(model='yolov8n-cls.pt', source=ASSETS)
         predictor = ClassificationPredictor(overrides=args)
@@ -31,7 +31,7 @@ class MultiLabelClassificationPredictor(BasePredictor):
         """Initializes ClassificationPredictor setting the task to 'classify'."""
         super().__init__(cfg, overrides, _callbacks)
         self.args.task = "multi_classify"
-        self._legacy_transform_name = "ultralytics.yolo.data.augment.ToTensor"
+        self._legacy_transform_name = "univi.yolo.data.augment.ToTensor"
 
     def preprocess(self, img):
         """Converts input image to model-compatible data type."""

@@ -3,8 +3,8 @@
 import cv2
 import pytest
 
-from ultralytics import YOLO, solutions
-from ultralytics.utils.downloads import safe_download
+from univi import YOLO, solutions
+from univi.utils.downloads import safe_download
 
 MAJOR_SOLUTIONS_DEMO = "https://github.com/ultralytics/assets/releases/download/v0.0.0/solutions_ci_demo.mp4"
 WORKOUTS_SOLUTION_DEMO = "https://github.com/ultralytics/assets/releases/download/v0.0.0/solution_ci_pose_demo.mp4"
@@ -61,7 +61,7 @@ def test_aigym():
 def test_instance_segmentation():
     """Test the instance segmentation solution."""
 
-    from ultralytics.utils.plotting import Annotator, colors
+    from univi.utils.plotting import Annotator, colors
 
     model = YOLO("yolov8n-seg.pt")
     names = model.names

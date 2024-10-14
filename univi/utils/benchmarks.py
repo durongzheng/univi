@@ -3,7 +3,7 @@
 Benchmark a YOLO model formats for speed and accuracy.
 
 Usage:
-    from ultralytics.utils.benchmarks import ProfileModels, benchmark
+    from univi.utils.benchmarks import ProfileModels, benchmark
     ProfileModels(['yolov8n.yaml', 'yolov8s.yaml']).profile()
     benchmark(model='yolov8n.pt', imgsz=160)
 
@@ -36,14 +36,14 @@ import numpy as np
 import torch.cuda
 import yaml
 
-from ultralytics import YOLO, YOLOWorld
-from ultralytics.cfg import TASK2DATA, TASK2METRIC
-from ultralytics.engine.exporter import export_formats
-from ultralytics.utils import ARM64, ASSETS, IS_JETSON, IS_RASPBERRYPI, LINUX, LOGGER, MACOS, TQDM, WEIGHTS_DIR
-from ultralytics.utils.checks import IS_PYTHON_3_12, check_requirements, check_yolo
-from ultralytics.utils.downloads import safe_download
-from ultralytics.utils.files import file_size
-from ultralytics.utils.torch_utils import select_device
+from univi import YOLO, YOLOWorld
+from univi.cfg import TASK2DATA, TASK2METRIC
+from univi.engine.exporter import export_formats
+from univi.utils import ARM64, ASSETS, IS_JETSON, IS_RASPBERRYPI, LINUX, LOGGER, MACOS, TQDM, WEIGHTS_DIR
+from univi.utils.checks import IS_PYTHON_3_12, check_requirements, check_yolo
+from univi.utils.downloads import safe_download
+from univi.utils.files import file_size
+from univi.utils.torch_utils import select_device
 
 
 def benchmark(
@@ -69,7 +69,7 @@ def benchmark(
 
     Example:
         ```python
-        from ultralytics.utils.benchmarks import benchmark
+        from univi.utils.benchmarks import benchmark
 
         benchmark(model='yolov8n.pt', imgsz=640)
         ```
@@ -300,7 +300,7 @@ class ProfileModels:
 
     Example:
         ```python
-        from ultralytics.utils.benchmarks import ProfileModels
+        from univi.utils.benchmarks import ProfileModels
 
         ProfileModels(['yolov8n.yaml', 'yolov8s.yaml'], imgsz=640).profile()
         ```

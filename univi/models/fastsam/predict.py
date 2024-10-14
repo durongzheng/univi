@@ -2,10 +2,10 @@
 import torch
 from PIL import Image
 
-from ultralytics.models.yolo.segment import SegmentationPredictor
-from ultralytics.utils import DEFAULT_CFG, checks
-from ultralytics.utils.metrics import box_iou
-from ultralytics.utils.ops import scale_masks
+from univi.models.yolo.segment import SegmentationPredictor
+from univi.utils import DEFAULT_CFG, checks
+from univi.utils.metrics import box_iou
+from univi.utils.ops import scale_masks
 
 from .utils import adjust_bboxes_to_image_border
 

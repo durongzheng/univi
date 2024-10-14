@@ -6,12 +6,12 @@ from typing import List
 import cv2
 import numpy as np
 
-from ultralytics.data.augment import LetterBox
-from ultralytics.utils import LOGGER as logger
-from ultralytics.utils import SETTINGS
-from ultralytics.utils.checks import check_requirements
-from ultralytics.utils.ops import xyxy2xywh
-from ultralytics.utils.plotting import plot_images
+from univi.data.augment import LetterBox
+from univi.utils import LOGGER as logger
+from univi.utils import SETTINGS
+from univi.utils.checks import check_requirements
+from univi.utils.ops import xyxy2xywh
+from univi.utils.plotting import plot_images
 
 
 def get_table_schema(vector_size):

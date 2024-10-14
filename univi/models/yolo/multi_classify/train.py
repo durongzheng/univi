@@ -20,7 +20,7 @@ class MultiLabelClassificationTrainer(BaseTrainer):
 
     Example:
         ```python
-        from ultralytics.models.yolo.classify import MultilabelClassificationTrainer
+        from univi.models.yolo.classify import MultilabelClassificationTrainer
 
         args = dict(model='yolov8n-cls.pt', data='imagenet10', epochs=3)
         trainer = MultilabelClassificationTrainer(overrides=args)
@@ -58,7 +58,7 @@ class MultiLabelClassificationTrainer(BaseTrainer):
 
     def setup_model(self):
         """Load, create or download model for any task."""
-        import torchvision  # scope for faster 'import ultralytics'
+        import torchvision  # scope for faster 'import univi'
 
         if str(self.model) in torchvision.models.__dict__:
             self.model = torchvision.models.__dict__[self.model](

@@ -272,7 +272,7 @@ def test_data_utils():
     from univi.data.utils import HUBDatasetStats, autosplit
     from univi.utils.downloads import zip_directory
 
-    # from ultralytics.utils.files import WorkingDirectory
+    # from univi.utils.files import WorkingDirectory
     # with WorkingDirectory(ROOT.parent / 'tests'):
 
     for task in TASKS:
@@ -376,7 +376,7 @@ def test_utils_torchutils():
 @pytest.mark.slow
 @pytest.mark.skipif(not ONLINE, reason="environment is offline")
 def test_utils_downloads():
-    """Test file download utilities from ultralytics.utils.downloads."""
+    """Test file download utilities from univi.utils.downloads."""
     from univi.utils.downloads import get_google_drive_file_info
 
     get_google_drive_file_info("https://drive.google.com/file/d/1cqT-cJgANNrhIHCrEufUYhQ4RqiWG_lJ/view?usp=drive_link")
@@ -434,7 +434,7 @@ def test_utils_patches_torch_save():
 
     mock = MagicMock(side_effect=RuntimeError)
 
-    with patch("ultralytics.utils.patches._torch_save", new=mock):
+    with patch("univi.utils.patches._torch_save", new=mock):
         with pytest.raises(RuntimeError):
             torch_save(torch.zeros(1), TMP / "test.pt")
 

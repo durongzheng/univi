@@ -8,7 +8,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import Dict, List, Union
 
-from ultralytics.utils import (
+from univi.utils import (
     ASSETS,
     DEFAULT_CFG,
     DEFAULT_CFG_DICT,
@@ -236,7 +236,7 @@ def get_cfg(cfg: Union[str, Path, Dict, SimpleNamespace] = DEFAULT_CFG_DICT, ove
         (SimpleNamespace): Namespace containing the merged configuration arguments.
 
     Examples:
-        >>> from ultralytics.cfg import get_cfg
+        >>> from univi.cfg import get_cfg
         >>> config = get_cfg()  # Load default configuration
         >>> config = get_cfg('path/to/config.yaml', overrides={'epochs': 50, 'batch_size': 16})
 
@@ -357,7 +357,7 @@ def get_save_dir(args, name=None):
     if getattr(args, "save_dir", None):
         save_dir = args.save_dir
     else:
-        from ultralytics.utils.files import increment_path
+        from univi.utils.files import increment_path
 
         project = args.project or (ROOT.parent / "tests/tmp/runs" if TESTS_RUNNING else RUNS_DIR) / args.task
         name = name or args.name or f"{args.mode}"
@@ -493,18 +493,18 @@ def handle_yolo_hub(args: List[str]) -> None:
         ```
 
     Notes:
-        - The function imports the 'hub' module from ultralytics to perform login and logout operations.
+        - The function imports the 'hub' module from univi to perform login and logout operations.
         - For the 'login' command, if no API key is provided, an empty string is passed to the login function.
         - The 'logout' command does not require any additional arguments.
     """
-    from ultralytics import hub
+    from univi import hub
 
     if args[0] == "login":
         key = args[1] if len(args) > 1 else ""
         # Log in to Ultralytics HUB using the provided API key
         hub.login(key)
     elif args[0] == "logout":
-        # Log out from Ultralytics HUB
+        # Log out from univi HUB
         hub.logout()
 
 
@@ -789,23 +789,23 @@ def entrypoint(debug=""):
     overrides["model"] = model
     stem = Path(model).stem.lower()
     if "rtdetr" in stem:  # guess architecture
-        from ultralytics import RTDETR
+        from univi import RTDETR
 
         model = RTDETR(model)  # no task argument
     elif "fastsam" in stem:
-        from ultralytics import FastSAM
+        from univi import FastSAM
 
         model = FastSAM(model)
     elif "sam2" in stem:
-        from ultralytics import SAM2
+        from univi import SAM2
 
         model = SAM2(model)
     elif "sam" in stem:
-        from ultralytics import SAM
+        from univi import SAM
 
         model = SAM(model)
     else:
-        from ultralytics import YOLO
+        from univi import YOLO
 
         model = YOLO(model, task=task)
     if isinstance(overrides.get("pretrained"), str):

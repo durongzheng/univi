@@ -19,7 +19,7 @@ import numpy as np
 import requests
 import torch
 
-from ultralytics.utils import (
+from univi.utils import (
     ASSETS,
     AUTOINSTALL,
     IS_COLAB,
@@ -52,16 +52,16 @@ def parse_requirements(file_path=ROOT.parent / "requirements.txt", package=""):
 
     Args:
         file_path (Path): Path to the requirements.txt file.
-        package (str, optional): Python package to use instead of requirements.txt file, i.e. package='ultralytics'.
+        package (str, optional): Python package to use instead of requirements.txt file, i.e. package='univi'.
 
     Returns:
         (List[Dict[str, str]]): List of parsed requirements as dictionaries with `name` and `specifier` keys.
 
     Example:
         ```python
-        from ultralytics.utils.checks import parse_requirements
+        from univi.utils.checks import parse_requirements
 
-        parse_requirements(package='ultralytics')
+        parse_requirements(package='univi')
         ```
     """
 
@@ -211,7 +211,7 @@ def check_version(
     if not current:  # if current is '' or None
         LOGGER.warning(f"WARNING ⚠️ invalid check_version({current}, {required}) requested, please check values.")
         return True
-    elif not current[0].isdigit():  # current is package name rather than version string, i.e. current='ultralytics'
+    elif not current[0].isdigit():  # current is package name rather than version string, i.e. current='univi'
         try:
             name = current  # assigned package name to 'name' arg
             current = metadata.version(current)  # get version string from package name
@@ -252,7 +252,7 @@ def check_version(
     return result
 
 
-def check_latest_pypi_version(package_name="ultralytics"):
+def check_latest_pypi_version(package_name="univi"):
     """
     Returns the latest version of a PyPI package without downloading or installing it.
 
@@ -278,7 +278,7 @@ def check_pip_update_available():
     """
     if ONLINE and IS_PIP_PACKAGE:
         with contextlib.suppress(Exception):
-            from ultralytics import __version__
+            from univi import __version__
 
             latest = check_latest_pypi_version()
             if check_version(__version__, f"<{latest}"):  # check if current version is < latest version
@@ -349,7 +349,7 @@ def check_requirements(requirements=ROOT.parent / "requirements.txt", exclude=()
 
     Example:
         ```python
-        from ultralytics.utils.checks import check_requirements
+        from univi.utils.checks import check_requirements
 
         # Check a requirements.txt file
         check_requirements('path/to/requirements.txt')
@@ -555,7 +555,7 @@ def check_yolo(verbose=True, device=""):
     """Return a human-readable YOLO software and hardware summary."""
     import psutil
 
-    from ultralytics.utils.torch_utils import select_device
+    from univi.utils.torch_utils import select_device
 
     if IS_JUPYTER:
         if check_requirements("wandb", install=False):
@@ -585,8 +585,8 @@ def collect_system_info():
 
     import psutil
 
-    from ultralytics.utils import ENVIRONMENT, IS_GIT_DIR
-    from ultralytics.utils.torch_utils import get_cpu_info
+    from univi.utils import ENVIRONMENT, IS_GIT_DIR
+    from univi.utils.torch_utils import get_cpu_info
 
     ram_info = psutil.virtual_memory().total / (1024**3)  # Convert bytes to GB
     check_yolo()
@@ -600,7 +600,7 @@ def collect_system_info():
         f"{'CUDA':<20}{torch.version.cuda if torch and torch.cuda.is_available() else None}\n"
     )
 
-    for r in parse_requirements(package="ultralytics"):
+    for r in parse_requirements(package="univi"):
         try:
             current = metadata.version(r.name)
             is_met = "✅ " if check_version(current, str(r.specifier), hard=True) else "❌ "
@@ -631,8 +631,8 @@ def check_amp(model):
 
     Example:
         ```python
-        from ultralytics import YOLO
-        from ultralytics.utils.checks import check_amp
+        from univi import YOLO
+        from univi.utils.checks import check_amp
 
         model = YOLO('yolov8n.pt').model.cuda()
         check_amp(model)
@@ -641,7 +641,7 @@ def check_amp(model):
     Returns:
         (bool): Returns True if the AMP functionality works correctly with YOLOv8 model, else False.
     """
-    from ultralytics.utils.torch_utils import autocast
+    from univi.utils.torch_utils import autocast
 
     device = next(model.parameters()).device  # get model device
     if device.type in {"cpu", "mps"}:
@@ -660,7 +660,7 @@ def check_amp(model):
     LOGGER.info(f"{prefix}running Automatic Mixed Precision (AMP) checks with YOLOv8n...")
     warning_msg = "Setting 'amp=True'. If you experience zero-mAP or NaN losses you can disable AMP with amp=False."
     try:
-        from ultralytics import YOLO
+        from univi import YOLO
 
         assert amp_allclose(YOLO("yolov8n.pt"), im)
         LOGGER.info(f"{prefix}checks passed ✅")
