@@ -82,6 +82,7 @@ from .transformer import (
     TransformerEncoderLayer,
     TransformerLayer,
 )
+from .RepViT import repvit_m0_6, repvit_m0_9, repvit_m1_0, repvit_m1_1, repvit_m1_5, repvit_m2_3
 
 __all__ = (
     "Conv",
@@ -150,4 +151,10 @@ __all__ = (
     "Attention",
     "PSA",
     "SCDown",
+    "repvit_m0_6", 
+    "repvit_m0_9", 
+    "repvit_m1_0", 
+    "repvit_m1_1",
+    "repvit_m1_5", 
+    "repvit_m2_3",
 )
