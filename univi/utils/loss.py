@@ -608,11 +608,23 @@ class v8ClassificationLoss:
     
 class v8MultiLabelClassificationLoss:
     """Criterion class for computing training losses."""
+    def __init__(self, model):  # model must be de-paralleled
+        m = model.model[-1]  # Classify() module
+        self.nc = m.nc  # number of classes
 
     def __call__(self, preds, batch):
         """Compute the multilabel classification loss between predictions and true labels."""
         preds = F.sigmoid(preds)
-        loss = F.binary_cross_entropy(preds, batch["cls"], reduction="mean")
+        targets = torch.zeros((batch['cls'].shape[0], self.nc))
+        for i, index in enumerate(batch['cls']):
+            targets[i][index] = 1
+
+        from univi.utils import LOGGER
+        LOGGER.info(f"{targets.shape}")
+        LOGGER.info(f"{targets}")
+        import sys
+        sys.exit()
+        loss = F.binary_cross_entropy(preds, targets, reduction="mean")
         loss_items = loss.detach()
         return loss, loss_items
 

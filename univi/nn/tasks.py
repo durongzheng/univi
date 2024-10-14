@@ -535,7 +535,7 @@ class MultiLabelClassificationModel(BaseModel):
 
     def init_criterion(self):
         """Initialize the loss criterion for the ClassificationModel."""
-        return v8MultiLabelClassificationLoss()
+        return v8MultiLabelClassificationLoss(self.model)
 
 class RTDETRDetectionModel(DetectionModel):
     """
@@ -833,13 +833,13 @@ def torch_safe_load(weight):
     try:
         with temporary_modules(
             modules={
-                "ultralytics.yolo.utils": "ultralytics.utils",
-                "ultralytics.yolo.v8": "ultralytics.models.yolo",
-                "ultralytics.yolo.data": "ultralytics.data",
+                "univi.yolo.utils": "univi.utils",
+                "univi.yolo.v8": "univi.models.yolo",
+                "univi.yolo.data": "univi.data",
             },
             attributes={
-                "ultralytics.nn.modules.block.Silence": "torch.nn.Identity",  # YOLOv9e
-                "ultralytics.nn.tasks.YOLOv10DetectionModel": "ultralytics.nn.tasks.DetectionModel",  # YOLOv10
+                "univi.nn.modules.block.Silence": "torch.nn.Identity",  # YOLOv9e
+                "univi.nn.tasks.YOLOv10DetectionModel": "univi.nn.tasks.DetectionModel",  # YOLOv10
             },
         ):
             ckpt = torch.load(file, map_location="cpu")

@@ -194,9 +194,9 @@ def add_integration_callbacks(instance):
     """
 
     # Load HUB callbacks
-    from .hub import callbacks as hub_cb
-
-    callbacks_list = [hub_cb]
+    # from .hub import callbacks as hub_cb
+    # callbacks_list = [hub_cb]
+    callbacks_list = []
 
     # Load training callbacks
     if "Trainer" in instance.__class__.__name__:
