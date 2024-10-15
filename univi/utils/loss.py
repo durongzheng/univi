@@ -608,26 +608,19 @@ class v8ClassificationLoss:
     
 class v8MultiLabelClassificationLoss:
     """Criterion class for computing training losses."""
-    def __init__(self, model):  # model must be de-paralleled
-        m = model.model[-1]  # Classify() module
-        self.nc = m.nc  # number of classes
+    def __init__(self, nc):  # number of classes
+        self.nc = nc  
 
     def __call__(self, preds, batch):
         """Compute the multilabel classification loss between predictions and true labels."""
-        preds = F.sigmoid(preds)
+        # [batch] 形状的张量转换为 [batch, nc] 形状, 与预测值(preds)对齐
         targets = torch.zeros((batch['cls'].shape[0], self.nc))
+        targets = targets.to(preds.device)
         for i, index in enumerate(batch['cls']):
             targets[i][index] = 1
-
-        from univi.utils import LOGGER
-        LOGGER.info(f"{targets.shape}")
-        LOGGER.info(f"{targets}")
-        import sys
-        sys.exit()
-        loss = F.binary_cross_entropy(preds, targets, reduction="mean")
+        loss = F.binary_cross_entropy_with_logits(preds, targets,reduction='sum')
         loss_items = loss.detach()
         return loss, loss_items
-
 
 class v8OBBLoss(v8DetectionLoss):
     """Calculates losses for object detection, classification, and box distribution in rotated YOLO models."""

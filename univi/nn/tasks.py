@@ -535,7 +535,7 @@ class MultiLabelClassificationModel(BaseModel):
 
     def init_criterion(self):
         """Initialize the loss criterion for the ClassificationModel."""
-        return v8MultiLabelClassificationLoss(self.model)
+        return v8MultiLabelClassificationLoss(self.yaml['nc'])
 
 class RTDETRDetectionModel(DetectionModel):
     """
