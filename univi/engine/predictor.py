@@ -192,7 +192,7 @@ class BasePredictor:
                 "transforms",
                 classify_transforms(self.imgsz[0], crop_fraction=self.args.crop_fraction),
             )
-            if self.args.task == "classify"
+            if self.args.task == "classify" or self.args.task == "multi_classify"
             else None
         )
         self.dataset = load_inference_source(
@@ -276,7 +276,6 @@ class BasePredictor:
                 # Print batch results
                 if self.args.verbose:
                     LOGGER.info("\n".join(s))
-
                 self.run_callbacks("on_predict_batch_end")
                 yield from self.results
 

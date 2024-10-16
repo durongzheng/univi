@@ -20,7 +20,7 @@ class MultiLabelClassificationTrainer(BaseTrainer):
 
     Example:
         ```python
-        from univi.models.yolo.classify import MultilabelClassificationTrainer
+        from univi.models.yolo.multi_classify import MultilabelClassificationTrainer
 
         args = dict(model='yolov8n-cls.pt', data='imagenet10', epochs=3)
         trainer = MultilabelClassificationTrainer(overrides=args)
