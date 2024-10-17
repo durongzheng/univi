@@ -31,6 +31,7 @@ from univi.nn.modules import (
     CBFuse,
     CBLinear,
     Classify,
+    MultiLabelClassify,
     Concat,
     Conv,
     Conv2,
@@ -516,7 +517,7 @@ class MultiLabelClassificationModel(BaseModel):
     def reshape_outputs(model, nc):
         """Update a TorchVision classification model to class count 'n' if required."""
         name, m = list((model.model if hasattr(model, "model") else model).named_children())[-1]  # last module
-        if isinstance(m, Classify):  # YOLO Classify() head
+        if isinstance(m, Classify) or isinstance(m,MultiLabelClassify):  # MultiLabel Classify() head
             if m.linear.out_features != nc:
                 m.linear = nn.Linear(m.linear.in_features, nc)
         elif isinstance(m, nn.Linear):  # ResNet, EfficientNet
@@ -976,6 +977,7 @@ def parse_model(d, ch, verbose=True):  # model_dict, input_channels(3)
         n = n_ = max(round(n * depth), 1) if n > 1 else n  # depth gain
         if m in {
             Classify,
+            MultiLabelClassify,
             Conv,
             ConvTranspose,
             GhostConv,
@@ -1126,7 +1128,7 @@ def guess_model_task(model):
         model (nn.Module | dict): PyTorch model or model configuration in YAML format.
 
     Returns:
-        (str): Task of the model ('detect', 'segment', 'classify', 'pose').
+        (str): Task of the model ('detect', 'segment', 'classify', 'multi_classify', 'pose').
 
     Raises:
         SyntaxError: If the task of the model could not be determined.
@@ -1137,6 +1139,8 @@ def guess_model_task(model):
         m = cfg["head"][-1][-2].lower()  # output module name
         if m in {"classify", "classifier", "cls", "fc"}:
             return "classify"
+        if "multilabelclassify" in m:
+            return "multi_classify"
         if "detect" in m:
             return "detect"
         if m == "segment":
@@ -1165,6 +1169,8 @@ def guess_model_task(model):
                 return "segment"
             elif isinstance(m, Classify):
                 return "classify"
+            elif isinstance(m, MultiLabelClassify):
+                return "multi_classify"
             elif isinstance(m, Pose):
                 return "pose"
             elif isinstance(m, OBB):
@@ -1189,6 +1195,6 @@ def guess_model_task(model):
     # Unable to determine task from model
     LOGGER.warning(
         "WARNING ⚠️ Unable to automatically guess model task, assuming 'task=detect'. "
-        "Explicitly define task for your model, i.e. 'task=detect', 'segment', 'classify','pose' or 'obb'."
+        "Explicitly define task for your model, i.e. 'task=detect', 'segment', 'classify', 'multi_classify', 'pose' or 'obb'."
     )
     return "detect"  # assume detect
