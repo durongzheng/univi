@@ -29,15 +29,17 @@ def test_model_predict():
     model = YOLO(TEST_PT_FILE, task=TASK)
     classes = ['closed', 'cover', 'glasses', 'normal', 'squint', 'vague']
 
-    file_handler = logging.handlers.RotatingFileHandler(TEST_LOG_FILE, mode='a' , maxBytes=16777216, backupCount=10, encoding='utf-8')
-    LOGGER.addHandler(file_handler)
     for i, c in enumerate(classes):
         img_path = os.path.join(TEST_DATA_ROOT, c)
         results = model(source=img_path, imgsz=IMAGE_SIZE)
         false_results = 0
+        file_handler = logging.handlers.RotatingFileHandler(TEST_LOG_FILE, mode='a' , maxBytes=16777216, backupCount=10, encoding='utf-8')
+        LOGGER.addHandler(file_handler)
         for result in results:
             probs = result.probs
-            if(probs.top1 != i):
+            top1 = probs.top1
+            if(top1 != i):
                 false_results += 1
-                LOGGER.info(f'{result.path}, probs: {probs.data}')
-        LOGGER.info(f'Total Num of {c} is: {len(results)}, False Results of {c} is: {false_results}')
+                LOGGER.info(f'{result.path}, 识别结果: {classes[top1]}, 置信度: {probs.data[top1]}')
+        LOGGER.info(f'{c} 总量: {len(results)}, 错误量: {false_results}')
+        LOGGER.removeHandler(file_handler)
