@@ -336,7 +336,7 @@ class Model(nn.Module):
             "model": deepcopy(self.model).half() if isinstance(self.model, nn.Module) else self.model,
             "date": datetime.now().isoformat(),
             "version": __version__,
-            "license": "AGPL-3.0 license",
+            "license": "AGPL-3.0",
             "author": "联宇创新(Lianyu Co,L.T.D)",
         }
         torch.save({**self.ckpt, **updates}, filename, use_dill=use_dill)

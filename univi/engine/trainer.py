@@ -497,8 +497,8 @@ class BaseTrainer:
                 "train_results": {k.strip(): v for k, v in pd.read_csv(self.csv).to_dict(orient="list").items()},
                 "date": datetime.now().isoformat(),
                 "version": __version__,
-                "license": "AGPL-3.0 (https://ultralytics.com/license)",
-                "docs": "https://docs.ultralytics.com",
+                "license": "AGPL-3.0",
+                "author": "联宇创新(Lianyu Co,L.T.D)",
             },
             buffer,
         )
