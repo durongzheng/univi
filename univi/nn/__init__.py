@@ -3,6 +3,7 @@
 from .tasks import (
     BaseModel,
     ClassificationModel,
+    MultiLabelClassificationModel,
     DetectionModel,
     SegmentationModel,
     attempt_load_one_weight,
@@ -25,5 +26,6 @@ __all__ = (
     "DetectionModel",
     "SegmentationModel",
     "ClassificationModel",
+    "MultiLabelClassificationModel",
     "BaseModel",
 )
